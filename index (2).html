@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Store - Telegram Stars</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruuy+Pro:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kantumruuy Pro', sans-serif; transition: background 0.4s; overflow-x: hidden; }
+        .game-font { font-family: 'Orbitron', sans-serif; }
+        .dark { background-color: #0b0708; color: #f1f5f9; background-image: radial-gradient(at 0% 0%, rgba(234, 179, 8, 0.1) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(239, 68, 68, 0.1) 0px, transparent 50%); }
+        .dark .card-box { background: linear-gradient(180deg, rgba(28, 22, 18, 0.85) 0%, rgba(15, 12, 10, 0.95) 100%); border-color: rgba(234, 179, 8, 0.15); backdrop-blur: 12px; }
+        .dark .input-box { background: #0b0708; border-color: #3a2e1f; color: #fff; }
+        .dark .inner-bill { background: rgba(0, 0, 0, 0.3); border-color: rgba(234, 179, 8, 0.1); }
+        .light { background-color: #fffbeb; color: #1f1911; background-image: radial-gradient(at 0% 0%, rgba(234, 179, 8, 0.08) 0px, transparent 40%); }
+        .light .card-box { background: #ffffff; border-color: #fef3c7; box-shadow: 0 10px 25px -5px rgba(234, 179, 8, 0.05); }
+        .light .input-box { background: #ffffff; border-color: #fde047; color: #1f1911; }
+        .light .inner-bill { background: #fffbeb; border-color: #fef3c7; }
+        .toggle-dot { transition: transform 0.3s; }
+        .particle { position: absolute; top: -10px; pointer-events: none; animation: fall linear infinite; border-radius: 50%; background: linear-gradient(to bottom, #eab308, #f59e0b); opacity: 0.6; z-index: 0; }
+        @keyframes fall { 0% { transform: translateY(0); opacity: 0.6; } 100% { transform: translateY(105vh); opacity: 0; } }
+        .input-error { border-color: #ef4444 !important; box-shadow: 0 0 12px rgba(239, 68, 68, 0.5) !important; animation: shake 0.3s ease-in-out; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    </style>
+</head>
+<body class="dark min-h-screen flex flex-col justify-between relative">
+    <div id="particle-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <div id="custom-alert" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-gradient-to-b from-[#241e14] to-[#15110a] border border-amber-500/40 p-6 rounded-2xl max-w-sm w-full mx-4 text-center shadow-2xl shadow-amber-600/20 transform scale-90 transition-all duration-300" id="alert-box">
+            <div class="w-14 h-14 bg-amber-500/10 text-amber-500 border border-amber-500/30 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 animate-pulse">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="text-white font-bold text-base mb-2">សូមពិនិត្យព័ត៌មាន</h3>
+            <p id="alert-msg" class="text-gray-400 text-xs leading-relaxed mb-6"></p>
+            <button onclick="closeAlert()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold py-3 rounded-xl text-xs cursor-pointer shadow-lg">យល់ព្រម</button>
+        </div>
+    </div>
+
+    <nav class="border-b card-box p-4 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-amber-500 to-yellow-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20">
+                    <i class="fas fa-star text-black text-xl animate-spin" style="animation-duration: 4s;"></i>
+                </div>
+                <div><span class="game-font font-black tracking-widest text-2xl bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500">SELECT STORE</span></div>
+            </div>
+            <div class="flex items-center gap-2.5">
+                <i class="fas fa-moon text-gray-400 text-xs"></i>
+                <div onclick="toggleLight()" class="w-12 h-6 bg-slate-700 rounded-full p-0.5 cursor-pointer flex items-center relative" id="toggle-bg">
+                    <div id="toggle-dot" class="toggle-dot w-5 h-5 bg-white rounded-full shadow-md"></div>
+                </div>
+                <i class="fas fa-sun text-amber-400 text-xs"></i>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 mt-8 w-full flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+        
+        <div class="md:col-span-1 space-y-6">
+            <div class="card-box border p-6 rounded-2xl">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center text-xs font-bold game-font">01</div>
+                    <h2 class="font-bold text-sm tracking-wide">បញ្ចូលចំនួន Stars</h2>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-gray-400">ចំនួន Telegram Stars (ចាប់ពី 50 ឡើងទៅ)</label>
+                    <div class="relative">
+                        <input type="number" id="input_stars" min="50" oninput="calculatePrice(this.value)" placeholder="ឧទាហរណ៍៖ 50" class="w-full input-box border rounded-xl py-3 px-4 text-xs font-medium outline-none transition-all focus:border-amber-500">
+                    </div>
+                    <p class="text-[11px] text-amber-500 font-medium mt-1"><i class="fas fa-info-circle mr-1"></i>ប្រព័ន្ធអនុញ្ញាតឱ្យទិញចាប់ពី 50 Stars ឡើងទៅប៉ុណ្ណោះ។</p>
+                </div>
+            </div>
+
+            <div class="card-box border p-6 rounded-2xl">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center text-xs font-bold game-font">02</div>
+                    <h2 class="font-bold text-sm tracking-wide">ព័ត៌មានគណនី</h2>
+                </div>
+                <div id="hint-msg" class="text-center py-6 border border-dashed border-amber-500/30 rounded-xl px-4 text-xs text-gray-400">
+                    សូមបញ្ចូលចំនួន Stars ខាងលើជាមុនសិន ដើម្បីបំពេញព័ត៌មានគណនី!
+                </div>
+                <div id="form-fields" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-2">Telegram Username</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-amber-500 font-bold text-sm">@</span>
+                            <input type="text" id="input_username" oninput="removeError(this)" placeholder="username_របស់អ្នក" class="w-full input-box border rounded-xl py-3 pl-8 pr-4 text-xs font-medium outline-none transition-all focus:border-amber-500">
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-2">សូមប្រាកដថា Username របស់អ្នកត្រឹមត្រូវ ដើម្បីងាយស្រួលផ្ញើ Stars ជូន។</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:col-span-2 space-y-6">
+            <div class="card-box border p-6 rounded-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500"></div>
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center text-xs font-bold game-font">03</div>
+                    <h2 class="font-bold text-sm tracking-wide">ពិនិត្យតម្លៃ និងឆាតទិញ</h2>
+                </div>
+                <div class="inner-bill border rounded-xl p-4 mb-5 text-xs space-y-3">
+                    <div class="flex justify-between items-center text-gray-400">
+                        <span>ទំនិញកម្មង់៖</span>
+                        <span id="view-plan" class="font-bold">-</span>
+                    </div>
+                    <div class="border-t border-gray-700/40 light:border-gray-200 pt-2.5 flex justify-between items-center">
+                        <span class="font-semibold">ទឹកប្រាក់សរុបត្រូវបង់៖</span>
+                        <span id="view-price" class="game-font text-lg text-amber-500 font-black">$0.00</span>
+                    </div>
+                </div>
+                <button onclick="sendOrder()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2.5 cursor-pointer text-xs tracking-wide shadow-lg shadow-amber-500/15 transition-all"><i class="fas fa-shopping-cart"></i>ទិញភ្លាមៗ</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs font-bold">
+                <a href="https://t.me/Select_Store2" target="_blank" class="card-box border p-3.5 rounded-xl flex items-center justify-center gap-2 text-amber-500 hover:bg-amber-500/5 transition-all"><i class="fab fa-telegram"></i> CHANNEL STORE</a>
+                <a href="https://t.me/Im_sal88" target="_blank" class="card-box border p-3.5 rounded-xl flex items-center justify-center gap-2 text-yellow-500 hover:bg-yellow-500/5 transition-all"><i class="fas fa-headset"></i> SUPPORT @Im_sal88</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center p-6 text-xs text-gray-500 border-t card-box mt-16 relative z-10"><p class="tracking-wide">2026 Select Store. All Rights Reserved.</p></footer>
+
+    <script>
+        // កំណត់តម្លៃតាមការចង់បាន៖ 1 Star = $0.019 (៥០ Stars = $0.95 គត់)
+        const starRate = 0.019; 
+        
+        let totalStars = 0;
+        let totalPrice = "0.00";
+
+        function toggleLight() {
+            const body = document.body; const dot = document.getElementById('toggle-dot'); const bg = document.getElementById('toggle-bg');
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark'); body.classList.add('light'); dot.style.transform = "translateX(24px)"; bg.style.backgroundColor = "#fde047";
+            } else {
+                body.classList.remove('light'); body.classList.add('dark'); dot.style.transform = "translateX(0px)"; bg.style.backgroundColor = "#334155";
+            }
+        }
+
+        function showAlert(msg) {
+            document.getElementById('alert-msg').innerText = msg;
+            const modal = document.getElementById('custom-alert'); const box = document.getElementById('alert-box');
+            modal.classList.remove('opacity-0', 'pointer-events-none'); box.classList.remove('scale-90'); box.classList.add('scale-100');
+        }
+
+        function closeAlert() {
+            const modal = document.getElementById('custom-alert'); const box = document.getElementById('alert-box');
+            modal.classList.add('opacity-0', 'pointer-events-none'); box.classList.remove('scale-100'); box.classList.add('scale-90');
+        }
+
+        function removeError(inputElement) { inputElement.classList.remove('input-error'); }
+
+        // មុខងារគណនាតម្លៃលុយ (1 Star = $0.019)
+        function calculatePrice(value) {
+            const amount = parseInt(value);
+            const inputS = document.getElementById('input_stars');
+            const hint = document.getElementById('hint-msg');
+            const fields = document.getElementById('form-fields');
+            const viewPlan = document.getElementById('view-plan');
+            const viewPrice = document.getElementById('view-price');
+
+            if (isNaN(amount) || amount <= 0) {
+                totalStars = 0;
+                viewPlan.innerText = "-";
+                viewPrice.innerText = "$0.00";
+                hint.classList.remove('hidden');
+                fields.classList.add('hidden');
+                return;
+            }
+
+            if (amount < 50) {
+                inputS.classList.add('input-error');
+                viewPlan.innerText = amount + " Stars (អប្បបរមា 50)";
+                viewPrice.innerText = "$0.00";
+                hint.classList.remove('hidden');
+                fields.classList.add('hidden');
+                totalStars = 0;
+            } else {
+                inputS.classList.remove('input-error');
+                hint.classList.add('hidden');
+                fields.classList.remove('hidden');
+
+                totalStars = amount;
+                let calculated = amount * starRate;
+                totalPrice = calculated.toFixed(2);
+
+                viewPlan.innerText = amount + " Telegram Stars";
+                viewPlan.className = "font-bold text-amber-500 bg-amber-500/10 px-2.5 py-0.5 rounded border border-amber-500/20";
+                viewPrice.innerText = "$" + totalPrice;
+            }
+        }
+
+        function sendOrder() {
+            const inputS = document.getElementById('input_stars');
+            const amount = parseInt(inputS.value);
+
+            if (!amount || amount < 50) {
+                inputS.classList.add('input-error');
+                inputS.focus();
+                showAlert("សូមបញ្ចូលចំនួន Telegram Stars ចាប់ពី 50 ឡើងទៅបាទ! 🌟");
+                return;
+            }
+
+            const inputU = document.getElementById('input_username');
+            let username = inputU.value.trim();
+
+            if (!username) {
+                inputU.classList.add('input-error');
+                inputU.focus();
+                showAlert("សូមបំពេញ Telegram Username របស់អ្នកឱ្យបានត្រឹមត្រូវ!");
+                return;
+            }
+
+            if (!username.startsWith('@')) username = '@' + username;
+
+            const textMsg = `[ ការកម្មង់ Telegram Stars ]\n---------------------------\nទំនិញ៖ ${totalStars} Stars 🌟\nUsername៖ ${username}\nតម្លៃសរុប៖ $${totalPrice}\n---------------------------\nខ្ញុំបានបំពេញព័ត៌មានរួចរាល់ បងជួយពិនិត្យឱ្យផងបង!`;
+            
+            window.open(`https://t.me/Im_RA12?text=${encodeURIComponent(textMsg)}`, '_blank');
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particle-container');
+            for (let i = 0; i < 20; i++) {
+                let particle = document.createElement('div'); particle.classList.add('particle');
+                let size = Math.random() * 4 + 2; let leftPos = Math.random() * 100; let delay = Math.random() * 8; let duration = Math.random() * 5 + 4;
+                particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${leftPos}%`; particle.style.animationDelay = `${delay}s`; particle.style.animationDuration = `${duration}s`;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+    </script>
+</body>
+</html>
